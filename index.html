@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Google Fonts with Tabular Numbers - Manish Gupta</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        margin: 0;
+      }
+      h1 {
+        margin-top: 10px;
+        margin-bottom: 10px;
+      }
+      .font-sample {
+        margin-bottom: 30px;
+        display: flex;
+      }
+      .text-sample-container {
+        width: 50%;
+      }
+      .font-name {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+      }
+      .sample-text {
+        font-size: 1.5em;
+      }
+      #input-container {
+        margin-bottom: 20px;
+      }
+      #layout-container {
+        display: flex;
+      }
+      .layout-container {
+        display: flex;
+      }
+      #left-panel {
+        width: 50%;
+      }
+      #right-panel {
+        width: 50%;
+      }
+      .left-panel {
+        width: 50%;
+      }
+      .right-panel {
+        width: 50%;
+      }
+      .input-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        margin-bottom: 20px;
+        width: 100%;
+      }
+      .sample-table {
+        width: 50%;
+        border-collapse: collapse;
+      }
+      .sample-table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: right;
+        width: 50px;
+      }
+      #filter-options {
+        margin-bottom: 20px;
+      }
+      #feature-settings {
+        margin-bottom: 20px;
+      }
+      #controls {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background-color: #f9f9f9;
+        padding: 20px;
+      }
+      #fonts-container {
+        margin-top: 400px;
+      }
+      #sample-textarea {
+        width: 95%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="controls">
+      <h1>Google Fonts with Tabular Numbers</h1>
+      <div style="display: flex; gap: 20px">
+        <div id="filter-options" class="left-panel">
+          <h2>Filter Options (fonts that support these features)</h2>
+          <label>
+            <input type="checkbox" name="filter" value="tnum" checked /> tnum
+            (Tabular Numbers)
+          </label>
+          <label>
+            <input type="checkbox" name="filter" value="pnum" checked /> pnum
+            (Proportional Numbers)
+          </label>
+          <label>
+            <input type="checkbox" name="filter" value="lnum" checked /> lnum
+            (Lining Numbers)
+          </label>
+
+          <!-- Add more filter options as needed -->
+        </div>
+
+        <div id="feature-settings" class="right-panel">
+          <h2>Font Feature Settings</h2>
+          <label>
+            <input type="checkbox" name="feature" value="tnum" /> tnum (Tabular
+            Numbers)
+          </label>
+          <label>
+            <input type="checkbox" name="feature" value="pnum" /> pnum
+            (Proportional Numbers)
+          </label>
+          <label>
+            <input type="checkbox" name="feature" value="lnum" /> lnum (Lining
+            Numbers)
+          </label>
+          <!-- Add more feature settings as needed -->
+        </div>
+      </div>
+
+      <div id="layout-container">
+        <div id="left-panel">
+          <textarea id="sample-textarea" rows="5" cols="40">
+The quick brown fox jumps over 1234567890.</textarea
+          >
+        </div>
+        <div id="right-panel">
+          <div class="input-grid">
+            <input
+              type="text"
+              id="input1"
+              placeholder="Input 1"
+              value="1.3M"
+              style="text-align: right"
+            />
+            <input
+              type="text"
+              id="input2"
+              placeholder="Input 2"
+              value="12.88K"
+              style="text-align: right"
+            />
+            <input
+              type="text"
+              id="input3"
+              placeholder="Input 3"
+              value="7.5M"
+              style="text-align: right"
+            />
+
+            <input
+              type="text"
+              id="input4"
+              placeholder="Input 4"
+              value="13.51K"
+              style="text-align: right"
+            />
+          </div>
+        </div>
+      </div>
+      <!-- <div class="layout-container"> -->
+      <!-- Raleway Font -->
+      <div class="font-sample">
+        <div class="text-sample-container">
+          <div class="font-name">Raleway</div>
+          <div class="sample-text" style="font-family: Raleway, sans-serif">
+            The quick brown fox jumps over 1234567890.
+          </div>
+        </div>
+        <table class="sample-table" style="font-family: Raleway, sans-serif">
+          <tbody>
+            <tr>
+              <td style="width: 50%">
+                <div
+                  class="table-cell-container"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                  "
+                >
+                  <div
+                    class="width-div"
+                    style="color: gray; font-size: 10px; font-family: monospace"
+                  ></div>
+                  <div class="table-text">1.3M</div>
+                </div>
+              </td>
+              <td style="width: 50%">
+                <div
+                  class="table-cell-container"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                  "
+                >
+                  <div
+                    class="width-div"
+                    style="color: gray; font-size: 10px; font-family: monospace"
+                  ></div>
+                  <div class="table-text">12.88K</div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 50%">
+                <div
+                  class="table-cell-container"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                  "
+                >
+                  <div
+                    class="width-div"
+                    style="color: gray; font-size: 10px; font-family: monospace"
+                  ></div>
+                  <div class="table-text">7.5M</div>
+                </div>
+              </td>
+              <td style="width: 50%">
+                <div
+                  class="table-cell-container"
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    width: 100%;
+                  "
+                >
+                  <div
+                    class="width-div"
+                    style="color: gray; font-size: 10px; font-family: monospace"
+                  ></div>
+                  <div class="table-text">13.51K</div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- </div> -->
+    </div>
+
+    <div id="fonts-container">
+      <!-- Font samples will be injected here -->
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/opentype.js/1.3.4/opentype.min.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
