@@ -2,7 +2,8 @@
 const apiURL = `/api/fonts`;
 
 // Choose which URL to use
-const finalApiURL = apiKey ? apiURL : apiCache;
+// const finalApiURL = apiKey ? apiURL : apiCache;
+const finalApiURL = apiURL;
 
 // Function to adjust the margin of the fonts container
 function adjustFontsContainerMargin() {
