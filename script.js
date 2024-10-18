@@ -23,33 +23,62 @@ const config = { attributes: true, childList: true, subtree: true };
 const controlsDiv = document.getElementById("controls");
 observer.observe(controlsDiv, config);
 
+var cachedResponses = {};
+
 // Function to initialize font samples
 async function initFontSamples() {
   const container = document.getElementById("fonts-container");
 
   try {
-    // Fetch font list from API or cache
-    const response = await fetch(finalApiURL);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (!cachedResponses[finalApiURL]) {
+      // Fetch font list from API or cache
+      const response = await fetch(finalApiURL);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      const fontList = data.items;
+      cachedResponses[finalApiURL] = fontList;
     }
-    const data = await response.json();
-    const fontList = data.items;
 
     // Get selected filters
-    const selectedFilters = Array.from(
+    const selectedFeatures = Array.from(
       document.querySelectorAll('input[name="filter"]:checked')
     ).map((input) => input.value);
 
+    const selectedCategories = Array.from(
+      document.querySelectorAll('input[name="category"]:checked')
+    ).map((input) => input.value);
+
+    // radio select with options - any, variable, color
+    const selectedTechnology = Array.from(
+      document.querySelectorAll('input[name="technology"]:checked')
+    ).map((input) => input.value);
+
+    console.log("selectedTechnology", selectedTechnology);
+
     // Define filter criteria
     const filter = {
-      features: selectedFilters,
+      features: selectedFeatures,
+      category: selectedCategories,
       variants: ["regular", "italic"],
       subsets: ["latin"],
+      variable: selectedTechnology.includes("variable"),
     };
 
+    console.log("filter", filter);
+
+    console.log("fontList", cachedResponses[finalApiURL].slice(0, 5));
+
     // Filter fonts based on criteria
-    const fontListFiltered = await getFilteredGoogleFonts(fontList, filter);
+    const fontListFiltered = await getFilteredGoogleFonts(
+      cachedResponses[finalApiURL],
+      filter
+    );
+
+    // update #filter-count
+    document.getElementById("filter-count").textContent =
+      fontListFiltered.length;
 
     if (fontListFiltered.length === 0) {
       throw new Error("No fonts matched the filter criteria.");
@@ -242,8 +271,8 @@ async function getFilteredGoogleFonts(fontList, filter = {}) {
       features: [],
       variants: [],
       subsets: [],
-      colorCapabilities: [],
       axes: [],
+      variable: null,
     },
     ...filter,
   };
@@ -260,17 +289,19 @@ async function getFilteredGoogleFonts(fontList, filter = {}) {
       colorCapabilities = [],
     } = font;
 
+    if (font.family === "Raleway") {
+      console.log("filter", filter);
+      console.log("font", font);
+    }
+
     // Apply family filter
     if (filter.family.length && !filter.family.includes(family)) continue;
 
-    // Apply colorCapabilities filter
-    if (filter.colorCapabilities.length) {
-      if (!colorCapabilities.length) continue;
-      const hasColors = filter.colorCapabilities.every((color) =>
-        colorCapabilities.includes(color)
-      );
-      if (!hasColors) continue;
-    }
+    // Apply category filter
+    if (filter.category.length && !filter.category.includes(category)) continue;
+
+    // Apply variable filter
+    if (filter.variable !== false && axes.length === 0) continue;
 
     // Apply axes filter
     const axesNames = axes.map((item) => item.tag);
@@ -299,15 +330,22 @@ async function getFilteredGoogleFonts(fontList, filter = {}) {
       if (!hasSubset) continue;
     }
 
-    if (filter.features.length === 0) {
+    if (filter.features.length > 0) {
       // Get the font features via lib.font
       let fontUrl = files.regular ? files.regular : Object.values(files)[0];
-      let features = await getFontFeatures(fontUrl);
+
+      if (!cachedResponses[fontUrl]) {
+        let features = await getFontFeatures(fontUrl);
+        cachedResponses[fontUrl] = features;
+      }
+
+      let features = cachedResponses[fontUrl];
 
       // Check if font matches the features filter
-      let hasFeatures = filter.features.every((feature) =>
-        features.includes(feature)
-      );
+      let hasFeatures =
+        features &&
+        filter.features.every((feature) => features.includes(feature));
+
       if (!hasFeatures) continue;
     }
 
@@ -318,7 +356,63 @@ async function getFilteredGoogleFonts(fontList, filter = {}) {
   return fontListFiltered;
 }
 
+/**
+ * get font features via lib.font
+ * by parsing fonts and reading data tables
+ * https://github.com/Pomax/lib-font
+ */
+async function getFontFeatures(fontUrl) {
+  return new Promise((resolve, reject) => {
+    let font = new Font("fontFamily", {
+      skipStyleSheet: true,
+    });
+
+    font.src = fontUrl;
+    let features;
+
+    //let features = [], GSUB;
+    font.onload = (evt) => {
+      try {
+        let font = evt.detail.font;
+        let otTables = font.opentype.tables;
+
+        // skip fonts without features
+        let featureCount = otTables.GSUB
+          ? otTables.GSUB.featureList.featureCount
+          : 0;
+        if (featureCount) {
+          GSUB = otTables.GSUB.featureList.featureRecords;
+          features = [
+            ...new Set(
+              GSUB.map((rec) => {
+                return rec.featureTag;
+              })
+            ),
+          ];
+        }
+        resolve(features);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    font.onerror = (err) => {
+      reject(err);
+    };
+  });
+}
+
 // Event listeners
+document.querySelectorAll('input[name="category"]').forEach((input) => {
+  input.addEventListener("change", initFontSamples);
+});
+
+// radio select with options - any, variable, color
+const technologyInputs = document.querySelectorAll('input[name="technology"]');
+technologyInputs.forEach((input) => {
+  input.addEventListener("change", initFontSamples);
+});
+
 document
   .getElementById("sample-textarea")
   .addEventListener("input", updateSampleText);
