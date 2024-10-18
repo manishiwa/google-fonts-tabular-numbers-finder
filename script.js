@@ -55,8 +55,6 @@ async function initFontSamples() {
       document.querySelectorAll('input[name="technology"]:checked')
     ).map((input) => input.value);
 
-    console.log("selectedTechnology", selectedTechnology);
-
     // Define filter criteria
     const filter = {
       features: selectedFeatures,
@@ -65,10 +63,6 @@ async function initFontSamples() {
       subsets: ["latin"],
       variable: selectedTechnology.includes("variable"),
     };
-
-    console.log("filter", filter);
-
-    console.log("fontList", cachedResponses[finalApiURL].slice(0, 5));
 
     // Filter fonts based on criteria
     const fontListFiltered = await getFilteredGoogleFonts(
@@ -290,8 +284,9 @@ async function getFilteredGoogleFonts(fontList, filter = {}) {
     } = font;
 
     if (font.family === "Raleway") {
-      console.log("filter", filter);
-      console.log("font", font);
+      // always include Raleway
+      fontListFiltered.push(font);
+      continue;
     }
 
     // Apply family filter
